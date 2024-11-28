@@ -23,6 +23,6 @@ Ko2Lao는 라오스 외국인 노동자와 한국인 고용주 간의 원활한 
 - **프론트엔드**: React Native
 - **백엔드**: Supabase
 - **AI 번역 및 음성 기술**:
-  - Google Translate API 또는 Azure Translator API
+  - Google Translate API
   - Google Speech-to-Text 및 Text-to-Speech API
   - OpenAI GPT-4 API
