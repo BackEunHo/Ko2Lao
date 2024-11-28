@@ -1,50 +1,28 @@
-# Welcome to your Expo app 👋
+# Ko2Lao
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Ko2Lao는 라오스 외국인 노동자와 한국인 고용주 간의 원활한 의사소통을 지원하는 모바일 애플리케이션입니다. 텍스트와 음성을 손쉽게 번역하여 양방향 의사소통을 가능하게 합니다.
 
-## Get started
+## 주요 기능
 
-1. Install dependencies
+### 1. TextTranslate (텍스트 번역)
+- 사용자가 입력한 텍스트를 번역하고, 번역된 텍스트의 음성을 제공합니다.
+- **주요 요구사항**: 텍스트 입력 창, 번역 결과 출력, 텍스트-음성 변환(TTS).
 
-   ```bash
-   npm install
-   ```
+### 2. VoiceTranslate (음성 번역)
+- 사용자가 입력한 음성을 번역된 텍스트와 음성으로 제공합니다.
+- **주요 요구사항**: 실시간 음성 인식 및 텍스트로 변환(STT), 번역된 음성 제공.
 
-2. Start the app
+### 3. AIConverse (AI 대화 기능)
+- ChatGPT의 Voice Conversation 기능과 유사한 대화형 번역 기능을 제공합니다.
+- **주요 요구사항**: AI 기반 실시간 번역 및 대화 지원, 자연스러운 대화 흐름 유지.
 
-   ```bash
-    npx expo start
-   ```
+![mermaid-ai-diagram-2024-11-28-141743](https://github.com/user-attachments/assets/b5ccc0c6-7fb9-4a94-9881-9e6c2aa6b45e)
 
-In the output, you'll find options to open the app in a
+## 기술 스택
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **프론트엔드**: React Native
+- **백엔드**: Supabase
+- **AI 번역 및 음성 기술**:
+  - Google Translate API 또는 Azure Translator API
+  - Google Speech-to-Text 및 Text-to-Speech API
+  - OpenAI GPT-4 API
