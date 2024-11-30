@@ -8,7 +8,6 @@ import {
     Platform,
 } from 'react-native';
 import { Audio } from 'expo-av';
-import * as Speech from 'expo-speech';
 import { Ionicons } from '@expo/vector-icons';
 import { transcribeAudio, translateText } from '../utils/openai';
 import { speakLao } from '../utils/tts';

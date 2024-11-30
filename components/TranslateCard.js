@@ -5,14 +5,11 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    KeyboardAvoidingView,
-    Platform,
     ActivityIndicator,
     TouchableWithoutFeedback,
     Keyboard,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import * as Speech from 'expo-speech';
 import { translateText } from '../utils/openai';
 import { speakLao } from '../utils/tts';
 
@@ -58,7 +55,7 @@ export default function TranslateCard() {
                     multiline
                     numberOfLines={3}
                     returnKeyType="done"
-                    blurOnSubmit={true}
+
                 />
                 <TouchableOpacity
                     style={styles.translateButton}

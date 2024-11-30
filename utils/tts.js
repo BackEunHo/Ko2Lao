@@ -1,72 +1,73 @@
 import { Audio } from 'expo-av';
-import { ELEVENLABS_API_KEY } from '@env';
-import * as FileSystem from 'expo-file-system';
 
-export const speakLao = async (text) => {
+export async function speakLao(text) {
+    if (!text) return;
+
     try {
-        // ElevenLabs API로 음성 파일 생성 요청
-        const response = await fetch('https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'xi-api-key': ELEVENLABS_API_KEY,
-            },
-            body: JSON.stringify({
-                text: text,
-                model_id: "eleven_multilingual_v2",
-                voice_settings: {
-                    stability: 0.5,
-                    similarity_boost: 0.75,
-                }
-            }),
-        });
+        console.log('TTS Request:', text);
 
-        if (!response.ok) {
-            throw new Error('TTS request failed');
-        }
-
-        // 응답으로 받은 오디오 데이터를 blob으로 변환
-        const audioBlob = await response.blob();
-
-        // 임시 파일 경로 생성
-        const tempFilePath = FileSystem.cacheDirectory + 'temp_audio.mp3';
-
-        // Blob을 파일로 저장하기 위해 FileReader 사용
-        const reader = new FileReader();
-        reader.readAsDataURL(audioBlob);
-
-        await new Promise((resolve, reject) => {
-            reader.onload = async () => {
-                try {
-                    const base64Data = reader.result.split(',')[1];
-                    await FileSystem.writeAsStringAsync(tempFilePath, base64Data, {
-                        encoding: FileSystem.EncodingType.Base64,
-                    });
-                    resolve();
-                } catch (error) {
-                    reject(error);
-                }
-            };
-            reader.onerror = reject;
-        });
-
-        // 저장된 파일을 재생
-        const { sound } = await Audio.Sound.createAsync(
-            { uri: tempFilePath },
-            { shouldPlay: true }
+        const response = await fetch(
+            `https://texttospeech.googleapis.com/v1/text:synthesize?key=${process.env.GOOGLE_CLOUD_TTS_API_KEY}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    input: { text },
+                    voice: {
+                        languageCode: 'lo-LA',
+                        name: 'lo-LA-Standard-A',
+                        ssmlGender: 'NEUTRAL'
+                    },
+                    audioConfig: {
+                        audioEncoding: 'MP3',
+                        speakingRate: 1.0,
+                        pitch: 0,
+                        volumeGainDb: 0,
+                        sampleRateHertz: 24000
+                    },
+                }),
+            }
         );
 
-        // 재생이 끝나면 리소스 해제
-        sound.setOnPlaybackStatusUpdate(async (status) => {
-            if (status.didJustFinish) {
-                await sound.unloadAsync();
-                // 임시 파일 삭제
-                await FileSystem.deleteAsync(tempFilePath, { idempotent: true });
-            }
-        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Google Cloud API Error:', errorData);
+            throw new Error(errorData.error?.message || '음성 변환 서비스 오류가 발생했습니다.');
+        }
 
+        const data = await response.json();
+        console.log('TTS Response received');
+
+        if (!data.audioContent) {
+            console.error('No audio content in response:', data);
+            throw new Error('음성 데이터를 받아올 수 없습니다.');
+        }
+
+        const audioUri = `data:audio/mp3;base64,${data.audioContent}`;
+        const sound = new Audio.Sound();
+
+        try {
+            await sound.loadAsync({ uri: audioUri });
+            console.log('Audio loaded successfully');
+            await sound.playAsync();
+            console.log('Audio started playing');
+
+            sound.setOnPlaybackStatusUpdate(async (status) => {
+                if (status.didJustFinish) {
+                    console.log('Audio finished playing');
+                    await sound.unloadAsync();
+                }
+            });
+        } catch (audioError) {
+            console.error('Audio playback error:', audioError);
+            await sound.unloadAsync();
+            throw audioError;
+        }
     } catch (error) {
         console.error('TTS error:', error);
         throw error;
     }
-}; 
+} 
